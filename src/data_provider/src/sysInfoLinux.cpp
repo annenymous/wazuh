@@ -29,6 +29,7 @@
 #include "packages/packageLinuxDataRetriever.h"
 #include "linuxInfoHelper.h"
 #include <filesystem>
+#include <sys/stat.h>
 
 struct ProcTableDeleter
 {
@@ -468,9 +469,14 @@ void parseProcFS(nlohmann::json& portsInfo)
                         for (const auto& fdFile : std::filesystem::directory_iterator(pidFile.path()))
                         {
                             // Only symlinks that represent a socket are read.
-                            if (std::filesystem::is_socket(fdFile.status()))
+                            struct stat stats;
+
+                            if (!stat(fdFile.path().c_str(), &stats))
                             {
-                                findInodeMatch(fdFile.path(), inodes, matchInode, portsInfo);
+                                if (S_ISSOCK(stats.st_mode))
+                                {
+                                    findInodeMatch(fdFile.path(), inodes, matchInode, portsInfo);
+                                }
                             }
                         }
                     }

@@ -1512,10 +1512,10 @@ int check_pattern_expand(int do_seek) {
     int retval = 0;
 
     if (globs) {
-
         for (j = 0; globs[j].gpath; j++) {
 
             if (current_files >= maximum_files) {
+                mwarn(FILE_LIMIT, maximum_files);
                 break;
             }
 
@@ -1539,8 +1539,6 @@ int check_pattern_expand(int do_seek) {
                 int added = 0;
 
                 char *ex_file = OSHash_Get(excluded_files,full_path);
-
-                mdebug2("check_pattern_expand !found -> OSHash_Get()=ex_file:%s ", ex_file);
 
                 if(!ex_file) {
 
@@ -1581,8 +1579,6 @@ int check_pattern_expand(int do_seek) {
                     }
 
                     added = 1;
-
-                    mdebug2("check_pattern_expand added");
                 }
 
                 char *file_excluded_binary = OSHash_Get(excluded_binaries,full_path);
@@ -1617,11 +1613,7 @@ int check_pattern_expand(int do_seek) {
    
     return retval;
 }
-
-
-
 #endif
-
 
 static IT_control remove_duplicates(logreader *current, int i, int j) {
     IT_control d_control = CONTINUE_IT;

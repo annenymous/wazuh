@@ -653,10 +653,9 @@ int Read_Localfile(XML_NODE node, void *d1, __attribute__((unused)) void *d2)
             char** result = expand_win32_wildcards(logf[pl].file);
             char** expand_files = NULL;
 
-            if(result)
-            {
-                while (NULL != result[totalFiles++])
-                    ;
+            if(result) {
+                
+                while (NULL != result[totalFiles++]);
 
                 totalFiles %= maximum_files;
 
@@ -664,10 +663,8 @@ int Read_Localfile(XML_NODE node, void *d1, __attribute__((unused)) void *d2)
                 totalFiles = 0;
                 
                 while (NULL != result[file]) {
-                    if (file_exist(result[file])) {
-                        mdebug2("Read_Localfile strdup:%s", result[file]);    
+                    if (file_exist(result[file])) 
                         os_strdup(result[file], expand_files[totalFiles++]);
-                    }
 
                     file++;
                 }
@@ -681,7 +678,6 @@ int Read_Localfile(XML_NODE node, void *d1, __attribute__((unused)) void *d2)
 
                     os_realloc(log_config->globs, (gl + 2)*sizeof(logreader_glob), log_config->globs);
                     os_strdup(logf[pl].file, log_config->globs[gl].gpath);
-
 
                     memset(&log_config->globs[gl + 1], 0, sizeof(logreader_glob));
                     os_calloc(1, sizeof(logreader), log_config->globs[gl].gfiles);
@@ -709,7 +705,6 @@ int Read_Localfile(XML_NODE node, void *d1, __attribute__((unused)) void *d2)
 
                     gl++;
                     file++;
-
                 }
 
                 os_free(expand_files);
@@ -724,7 +719,6 @@ int Read_Localfile(XML_NODE node, void *d1, __attribute__((unused)) void *d2)
              log_config->config = logf;
 
             return 0;
-
 #else
         if (strchr(logf[pl].file, '*') ||
             strchr(logf[pl].file, '?') ||

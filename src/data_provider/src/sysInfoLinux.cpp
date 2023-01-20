@@ -479,7 +479,12 @@ void parseProcFS(nlohmann::json& portsInfo)
                             }
                             else
                             {
-                                throw std::runtime_error {std::strerror(errno)};
+                                try
+                                {
+                                    throw std::runtime_error {std::strerror(errno)};
+                                }
+                                catch (...)
+                                {}
                             }
                         }
                     }

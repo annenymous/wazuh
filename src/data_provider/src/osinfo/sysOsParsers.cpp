@@ -137,15 +137,30 @@ static bool findVersionInStream(std::istream& in,
 bool UnixOsParser::parseFile(std::istream& in, nlohmann::json& info)
 {
     constexpr auto SEPARATOR{'='};
-    static const std::map<std::string, std::string> KEY_MAP
+    bool ret = false;
+
     {
-        {"NAME",             "os_name"},
-        {"VERSION",          "os_version"},
-        {"ID",               "os_platform"},
-        {"BUILD_ID",         "os_build"},
-        {"VERSION_CODENAME", "os_codename"}
-    };
-    const auto ret {parseUnixFile(KEY_MAP, SEPARATOR, in, info)};
+        static const std::map<std::string, std::string> KEY_MAP
+        {
+            {"NAME",             "os_name"},
+            {"VERSION",          "os_version"},
+            {"ID",               "os_platform"},
+            {"BUILD_ID",         "os_build"},
+            {"VERSION_CODENAME", "os_codename"}
+        };
+        ret |= parseUnixFile(KEY_MAP, SEPARATOR, in, info);
+    }
+
+    if (info.find("os_version") == info.end())
+    {
+        static const std::map<std::string, std::string> KEY_MAP
+        {
+            {"VERSION_ID",       "os_version"},
+        };
+        in.clear();
+        in.seekg(0);
+        ret |= parseUnixFile(KEY_MAP, SEPARATOR, in, info);
+    }
 
     if (ret && info.find("os_version") != info.end())
     {
@@ -369,6 +384,14 @@ bool HpUxOsParser::parseUname(const std::string& in, nlohmann::json& output)
     output["os_name"] = "HP-UX";
     output["os_platform"] = "hp-ux";
     return ret;
+}
+
+bool AlpineOsParser::parseFile(std::istream& in, nlohmann::json& output)
+{
+    constexpr auto PATTERN_MATCH{R"([0-9].*\.[0-9]*)"};
+    output["os_name"] = "Alpine Linux";
+    output["os_platform"] = "alpine";
+    return findVersionInStream(in, output, PATTERN_MATCH);
 }
 
 bool MacOsParser::parseSwVersion(const std::string& in, nlohmann::json& output)

@@ -643,7 +643,6 @@ int Read_Localfile(XML_NODE node, void *d1, __attribute__((unused)) void *d2)
     /* Deploy glob entries */
     if (!logf[pl].command) {
 #ifdef WIN32
-
         if (strchr(logf[pl].file, '*') ||
             strchr(logf[pl].file, '?')) {
 
@@ -653,9 +652,9 @@ int Read_Localfile(XML_NODE node, void *d1, __attribute__((unused)) void *d2)
             char** result = expand_win32_wildcards(logf[pl].file);
             char** expand_files = NULL;
 
-            if(result) {
-                
-                while (NULL != result[totalFiles++]);
+            if (result) {
+
+    	        while (NULL != result[totalFiles++]);
 
                 totalFiles %= maximum_files;
 
@@ -663,15 +662,14 @@ int Read_Localfile(XML_NODE node, void *d1, __attribute__((unused)) void *d2)
                 totalFiles = 0;
                 
                 while (NULL != result[file]) {
-                    if (file_exist(result[file])) 
+                    if (file_exist(result[file])) {
                         os_strdup(result[file], expand_files[totalFiles++]);
+		    }
 
                     file++;
                 }
 
-                file = 0;
-           
-                while(file < totalFiles) {
+ 		for (file = 0; file < totalFile; file++) {
 
                     os_free(logf[pl].file);
                     os_strdup(expand_files[file], logf[pl].file);
@@ -704,7 +702,6 @@ int Read_Localfile(XML_NODE node, void *d1, __attribute__((unused)) void *d2)
                     }
 
                     gl++;
-                    file++;
                 }
 
                 os_free(expand_files);

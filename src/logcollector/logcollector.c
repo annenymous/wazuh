@@ -1523,8 +1523,6 @@ int check_pattern_expand(int do_seek) {
 
             os_strdup(globs[j].gpath, full_path);
 
-            mdebug2("check_pattern_expand->full_path :%s ", full_path);
-
             found = 0;
             for (i = 0; globs[j].gfiles[i].file; i++) {
                 if (!strcmp(globs[j].gfiles[i].file, full_path)) {
@@ -1610,7 +1608,7 @@ int check_pattern_expand(int do_seek) {
             os_free(full_path);
         }
     }
-   
+
     return retval;
 }
 #endif

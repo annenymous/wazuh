@@ -386,7 +386,7 @@ bool HpUxOsParser::parseUname(const std::string& in, nlohmann::json& output)
 
 bool AlpineOsParser::parseFile(std::istream& in, nlohmann::json& output)
 {
-    constexpr auto PATTERN_MATCH{R"([0-9].*\.[0-9]*)"};
+    constexpr auto PATTERN_MATCH{R"((?:[0-9]+\.)?(?:[0-9]+\.)?(?:[0-9]+))"};
     output["os_name"] = "Alpine Linux";
     output["os_platform"] = "alpine";
     return findVersionInStream(in, output, PATTERN_MATCH);

@@ -137,29 +137,27 @@ static bool findVersionInStream(std::istream& in,
 bool UnixOsParser::parseFile(std::istream& in, nlohmann::json& info)
 {
     constexpr auto SEPARATOR{'='};
-    bool ret = false;
+    bool ret;
 
+    static const std::map<std::string, std::string> KEY_MAP1
     {
-        static const std::map<std::string, std::string> KEY_MAP
-        {
-            {"NAME",             "os_name"},
-            {"VERSION",          "os_version"},
-            {"ID",               "os_platform"},
-            {"BUILD_ID",         "os_build"},
-            {"VERSION_CODENAME", "os_codename"}
-        };
-        ret |= parseUnixFile(KEY_MAP, SEPARATOR, in, info);
-    }
+        {"NAME",             "os_name"},
+        {"VERSION",          "os_version"},
+        {"ID",               "os_platform"},
+        {"BUILD_ID",         "os_build"},
+        {"VERSION_CODENAME", "os_codename"}
+    };
+    ret = parseUnixFile(KEY_MAP1, SEPARATOR, in, info);
 
     if (info.find("os_version") == info.end())
     {
-        static const std::map<std::string, std::string> KEY_MAP
+        static const std::map<std::string, std::string> KEY_MAP2
         {
             {"VERSION_ID",       "os_version"},
         };
         in.clear();
         in.seekg(0);
-        ret |= parseUnixFile(KEY_MAP, SEPARATOR, in, info);
+        ret |= parseUnixFile(KEY_MAP2, SEPARATOR, in, info);
     }
 
     if (ret && info.find("os_version") != info.end())
